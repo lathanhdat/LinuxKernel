@@ -1,0 +1,16 @@
+Xử lý lỗi System call
+
+Khi một system call lỗi, nó sẽ lưu một giá trị số nguyên tương ứng với mã lỗi đó vào một biến toàn cục là errno. 
+printf("open failed, err no:%d\n",errno);
+printf("open failed, error: %s\n", strerror(errno));
+
+Xử lý lỗi gọi hàm thư viện
+
+Các hàm thư viện khác nhau có thể trả về các kiểu giá trị lỗi khác nhau để biểu thị lỗi. Ta có thể chia các hàm thư viện này thành 3 nhóm như sau:
+
+    1/Hàm thư viện trả về giá trị lỗi giống hệt cách trả về của system call: -1 trả về lỗi, với biến toàn cục errno lưu giá trị lỗi. Ví dụ các hàm này như remove(), sử dụng unlink() system call. Có thể debug những hàm này giống như cách làm với system call.
+
+    2/Hàm thư viện trả về kiểu giá trị lỗi khác system call, nhưng vẫn lưu giá trị lỗi vào biến errno. Ví dụ hàm fopen() để mở một file, hàm này gọi sysem call open() và trả về con trỏ NULL khi bị lỗi (thay vì -1 của system call open()). Để biết được nguyên nhân lỗi của những hàm này, bạn có thể dùng biến errno hoặc hàm strerror(errno) để in ra nguyên nhân lỗi.
+
+    3/Hàm thư viện không sử dụng biến errno. Những hàm này thực hiện và trả về theo cách riêng và không lưu giá trị lỗi vào biến errno. Nếu bạn đọc giá trị errno với các hàm này có thể sẽ bị hiểu sai nguyên nhân lỗi, vì errno lưu kết quả lỗi của system call được gọi gần nhất, chứ không phải hàm này.
+
